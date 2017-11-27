@@ -87,7 +87,7 @@ def devcon(filename):   #get device to file
         print('Exception handled')
 
     if os.path.exists("unoriginal.txt"): #To add file un_1,un_2...N.
-        i=1
+        i=2
         x = devcon_recur(i)
         filename = filename.replace(".txt", "_" + str(x) + ".txt")
 
@@ -114,4 +114,3 @@ if __name__ == "__main__":
         unoriginal_file = devcon(unoriginal_file) #return modify filename
         aryCheckDeviceLost(original_file,unoriginal_file) #ori file, unori file, Lost/Found
         aryCheckDeviceFound(original_file,unoriginal_file)    #[], ori, unori file
-
