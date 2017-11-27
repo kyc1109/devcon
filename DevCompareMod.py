@@ -3,10 +3,11 @@
 import os, sys, subprocess, time
 class DevCompareMod: #First generate org file, others is generate unori file
 	def __init__(self, TestCaseNo): #__init__ equal DevCompareMod()
+		self.unori_cycle=1
 		self.TestCaseNo = TestCaseNo
-		self.original_file = self.TestCaseNo+"_original.txt"
-		self.unoriginal_file = self.TestCaseNo+"_unoriginal.txt"
-		self.log_file = self.TestCaseNo+"_log.txt"	
+		self.original_file = self.TestCaseNo+"_DevCom_ori.txt"#"_original.txt"
+		self.unoriginal_file = self.TestCaseNo+"_DevCom_unori.txt"#"_unoriginal.txt"
+		self.log_file = self.TestCaseNo+"_DevCom_log.txt" #"_log.txt"	
 		if not os.path.exists(self.original_file):
 			self.devcon(self.original_file)	#get device list to file
 		else:
@@ -52,8 +53,7 @@ class DevCompareMod: #First generate org file, others is generate unori file
 					strLost = strLost + "Lost: "+str(i)+" "+str(scrAry)
 					#wLog("Lost: "+str(i)+" "+str(scrAry))
 					break
-		
-		self.wLog(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())+"=======================================\n")
+		self.wLog(time.strftime("[%Y-%m-%d %H:%M:%S]", time.localtime())+"  [Cycle: "+str(self.unori_cycle)+"]=======================================\n")
 		self.wLog(strLost)
 
 	def aryCheckDeviceFound(self, scr,tar):	#file to array
@@ -97,22 +97,29 @@ class DevCompareMod: #First generate org file, others is generate unori file
 		except subprocess.CalledProcessError:
 			print("Exception handled")
 
-		if os.path.exists(self.TestCaseNo+"_unoriginal.txt"):
+		if os.path.exists(self.TestCaseNo+"_DevCom_unori.txt"):
 			i=2
-			x = self.devcon_recur(i)
-			filename = filename.replace(".txt", "_" + str(x) + ".txt")
+			self.unori_cycle = self.devcon_recur(i)
+			filename = filename.replace(".txt", "_" + str(self.unori_cycle) + ".txt")
 
 		wFile=open(filename,"w")
 		wFile.write(stdout) # write stdout to file
 		return filename
 
 	def devcon_recur(self,i): #if file exists i=i+1
-	    if os.path.exists(self.TestCaseNo+"_unoriginal_"+str(i)+".txt"):
-	        i=i+1
-	        return self.devcon_recur(i)
-	    else:
-	        return i
+		if os.path.exists(self.TestCaseNo+"_DevCom_unori_"+str(i)+".txt"):
+			i=i+1
+			return self.devcon_recur(i)
+		else:
+			return i
+
+
 
 if __name__ == '__main__':
-	self.TestCaseNo = sys.argv[1]
-	DevCompareMod(self.TestCaseNo)
+	if len(sys.argv) < 2:
+		TestCaseNo="My"
+	else:
+		TestCaseNo = sys.argv[1]
+	
+	unori_cycle=1
+	DevCompareMod(TestCaseNo)
