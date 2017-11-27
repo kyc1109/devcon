@@ -41,8 +41,8 @@ def aryCheckDeviceLost(scr,tar):    #file to array
                 strLost = strLost + "Lost: "+str(i)+" "+str(scrAry)
                 #wLog("Lost: "+str(i)+" "+str(scrAry))
                 break
-
-    wLog(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())+"=======================================\n")
+    global unori_cycle
+    wLog(time.strftime("[%Y-%m-%d %H:%M:%S]", time.localtime())+"  [Cycle: "+str(unori_cycle)+"]=======================================\n")
     wLog(strLost)
 
 def aryCheckDeviceFound(scr,tar):    #file to array
@@ -86,27 +86,28 @@ def devcon(filename):   #get device to file
     except subprocess.CalledProcessError:
         print('Exception handled')
 
-    if os.path.exists("unoriginal.txt"): #To add file un_1,un_2...N.
+    if os.path.exists("DevCom_unori.txt"): #To add file un_1,un_2...N.
         i=2
-        x = devcon_recur(i)
-        filename = filename.replace(".txt", "_" + str(x) + ".txt")
+        global unori_cycle
+        unori_cycle = devcon_recur(i)
+        filename = filename.replace(".txt", "_" + str(unori_cycle) + ".txt")
 
     wFile=open(filename,"w")
     wFile.write(stdout) # write stdout to file
     return filename
 
 def devcon_recur(i): #if file exists i=i+1
-    if os.path.exists("unoriginal_"+str(i)+".txt"):
+    if os.path.exists("DevCom_unori_"+str(i)+".txt"):
         i=i+1
         return devcon_recur(i)
     else:
         return i
 
 if __name__ == "__main__":
-    original_file = "original.txt"
-    unoriginal_file = "unoriginal.txt"
-    log_file = "log_DevCompare.txt"
-
+    original_file = "DevCom_ori.txt" #"original.txt"
+    unoriginal_file = "DevCom_unori.txt" #"unoriginal.txt"
+    log_file = "DevCom_log.txt"#"log_DevCompare.txt"
+    unori_cycle = 1
     if not os.path.exists(original_file):
         devcon(original_file)    #get device list to file
 
